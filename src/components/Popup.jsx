@@ -61,6 +61,17 @@ export default function Popup({ position, screenPosition, onClose, onAddDatastre
     }
   }, [screenPosition])
 
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        onClose()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [onClose])
+
   const handleInputChange = (e) => {
     const { name, value } = e.target
     setFormData((prev) => ({
@@ -112,7 +123,6 @@ export default function Popup({ position, screenPosition, onClose, onAddDatastre
   return (
     <div
       className='popup-overlay'
-      onEscapeKeyDown={onClose}
       onClick={onClose}
     >
       <div
