@@ -18,11 +18,18 @@ const Login = ({ onLogin }) => {
   return (
     <div className='login-container'>
       <div className='login-left'>
-        <img
-          src='/images/ltts_logo.png'
-          alt='LTTS Logo'
-          className='login-logo'
-        />
+        <a
+          href='https://www.ltts.com/'
+          target='_blank'
+          rel='noopener noreferrer'
+          className='logo-link'
+        >
+          <img
+            src='/images/ltts_logo.png'
+            alt='LTTS Logo'
+            className='login-logo'
+          />
+        </a>
       </div>
       <div className='login-right'>
         <div className='login-form-container'>
