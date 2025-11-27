@@ -49,6 +49,7 @@ export default function CityModel(props, ref) {
         props.onBuildingRightClick({
           position: [point.x, point.y, point.z],
           object: hit.object,
+          screenPosition: { x: event.clientX, y: event.clientY },
         });
       }
     }

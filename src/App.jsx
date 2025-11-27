@@ -9,10 +9,12 @@ function App() {
   const [showPopup, setShowPopup] = useState(false);
   const [selectedBuildingLocation, setSelectedBuildingLocation] =
     useState(null);
+  const [popupPosition, setPopupPosition] = useState(null);
   const [datastreams, setDatastreams] = useState([]);
 
   const handleBuildingRightClick = (data) => {
     setSelectedBuildingLocation(data.position);
+    setPopupPosition(data.screenPosition);
     setShowPopup(true);
   };
 
@@ -62,7 +64,7 @@ function App() {
             <div className="datastreams-list">
               {datastreams.map((ds) => (
                 <div key={ds.id} className="datastream-item">
-                  <div className="datastream-name">{ds.dataStreamName}</div>
+                  <div className="datastream-name">{ds.endPoint}</div>
                   <div className="datastream-meta">
                     <span className="badge">{ds.sensorType}</span>
                     <span className="frequency">{ds.frequency}s</span>
@@ -93,6 +95,7 @@ function App() {
       {showPopup && selectedBuildingLocation && (
         <Popup
           position={selectedBuildingLocation}
+          screenPosition={popupPosition}
           onClose={() => setShowPopup(false)}
           onAddDatastream={handleAddDatastream}
         />

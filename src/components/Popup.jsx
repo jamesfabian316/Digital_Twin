@@ -1,14 +1,70 @@
-import React, { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import "./Popup.css";
 
-export default function Popup({ position, onClose, onAddDatastream }) {
+export default function Popup({
+  position,
+  screenPosition,
+  onClose,
+  onAddDatastream,
+}) {
   const [formData, setFormData] = useState({
     sensorType: "",
-    dataStreamName: "",
-    frequency: "60", // seconds
+    endPoint: "",
+    port: "", // seconds
     unit: "",
     description: "",
   });
+
+  const containerRef = useRef(null);
+
+  // Adjust position to keep popup on screen
+  const [adjustedStyle, setAdjustedStyle] = useState({ visibility: "hidden" });
+
+  useEffect(() => {
+    if (screenPosition && containerRef.current) {
+      const { x, y } = screenPosition;
+      const { offsetWidth, offsetHeight } = containerRef.current;
+      const padding = 20;
+
+      let left = x + 10;
+      let top = y + 10;
+
+      // Check right edge
+      if (left + offsetWidth > window.innerWidth - padding) {
+        left = x - offsetWidth - 10;
+      }
+
+      // Check bottom edge
+      if (top + offsetHeight > window.innerHeight - padding) {
+        top = y - offsetHeight - 10;
+      }
+
+      // Check left edge (if flipped)
+      if (left < padding) {
+        left = padding;
+      }
+
+      // Check top edge (if flipped)
+      if (top < padding) {
+        top = padding;
+      }
+
+      const newStyle = {
+        position: "fixed",
+        left: `${left}px`,
+        top: `${top}px`,
+        margin: 0,
+        transform: "none",
+        visibility: "visible",
+      };
+
+      const raf = requestAnimationFrame(() => {
+        setAdjustedStyle(newStyle);
+      });
+
+      return () => cancelAnimationFrame(raf);
+    }
+  }, [screenPosition]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -19,8 +75,8 @@ export default function Popup({ position, onClose, onAddDatastream }) {
   };
 
   const handleAddDatastream = () => {
-    if (!formData.sensorType || !formData.dataStreamName) {
-      alert("Please fill in required fields (Sensor Type and Datastream Name)");
+    if (!formData.sensorType || !formData.endPoint) {
+      alert("Please fill in required fields (Data Source and Datastream Name)");
       return;
     }
 
@@ -33,8 +89,8 @@ export default function Popup({ position, onClose, onAddDatastream }) {
     // Reset form
     setFormData({
       sensorType: "",
-      dataStreamName: "",
-      frequency: "60",
+      endPoint: "",
+      port: "",
       unit: "",
       description: "",
     });
@@ -42,17 +98,12 @@ export default function Popup({ position, onClose, onAddDatastream }) {
     onClose();
   };
 
-  const sensorTypes = [
-    "Temperature",
-    "Humidity",
-    "Air Quality (PM2.5)",
-    "Noise Level",
-    "Light Intensity",
-    "Occupancy Count",
-    "Energy Consumption",
-    "Water Usage",
-    "CO2 Level",
-    "Vibration",
+  const dataSources = [
+    "OPC UA",
+    "SQL",
+    "WebSocket",
+    "REST API",
+    "MQTT",
     "Custom",
   ];
 
@@ -72,7 +123,12 @@ export default function Popup({ position, onClose, onAddDatastream }) {
 
   return (
     <div className="popup-overlay" onClick={onClose}>
-      <div className="popup-container" onClick={(e) => e.stopPropagation()}>
+      <div
+        ref={containerRef}
+        className="popup-container"
+        style={screenPosition ? adjustedStyle : {}}
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="popup-header">
           <h3>Add Datastream to Building</h3>
           <button className="popup-close-btn" onClick={onClose}>
@@ -89,15 +145,15 @@ export default function Popup({ position, onClose, onAddDatastream }) {
           </div>
 
           <div className="form-group">
-            <label htmlFor="sensorType">Sensor Type *</label>
+            <label htmlFor="sensorType">Data Source *</label>
             <select
               id="sensorType"
               name="sensorType"
               value={formData.sensorType}
               onChange={handleInputChange}
             >
-              <option value="">Select a sensor type</option>
-              {sensorTypes.map((type) => (
+              <option value="">Select a Data Source</option>
+              {dataSources.map((type) => (
                 <option key={type} value={type}>
                   {type}
                 </option>
@@ -106,24 +162,24 @@ export default function Popup({ position, onClose, onAddDatastream }) {
           </div>
 
           <div className="form-group">
-            <label htmlFor="dataStreamName">Datastream Name *</label>
+            <label htmlFor="endPoint">Endpoint *</label>
             <input
-              id="dataStreamName"
+              id="endPoint"
               type="text"
-              name="dataStreamName"
-              value={formData.dataStreamName}
+              name="endPoint"
+              value={formData.endPoint}
               onChange={handleInputChange}
               placeholder="e.g., Building_A_Temperature_Sensor_1"
             />
           </div>
 
           <div className="form-group">
-            <label htmlFor="frequency">Sampling Frequency (seconds)</label>
+            <label htmlFor="port">Port</label>
             <input
-              id="frequency"
-              type="number"
-              name="frequency"
-              value={formData.frequency}
+              id="port"
+              type="text"
+              name="port"
+              value={formData.port}
               onChange={handleInputChange}
               min="1"
               step="1"
