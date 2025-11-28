@@ -18,7 +18,8 @@ body {
 }
 
 .ltts-logo {
-  height: 40px;
+  /* background-color: wheat; */
+  height: 60px;
   /* object-fit: contain; */
 }
 
