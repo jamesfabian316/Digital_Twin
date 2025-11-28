@@ -5,7 +5,7 @@ import CityModel from '../cityModel'
 import Popup from './Popup'
 import '../App.css'
 
-function Dashboard() {
+function Dashboard({ onLogout }) {
   const [showPopup, setShowPopup] = useState(false)
   const [selectedBuildingLocation, setSelectedBuildingLocation] = useState(null)
   const [popupPosition, setPopupPosition] = useState(null)
@@ -35,9 +35,12 @@ function Dashboard() {
           className='ltts-logo'
         />
         <h2>City Level Digital Reconstruction for Multi Level Analysis</h2>
-        <div className='datastream-counter'>
-          {datastreams.length} datastream{datastreams.length !== 1 ? 's' : ''}
-        </div>
+        <button
+          className='logout-btn'
+          onClick={onLogout}
+        >
+          Logout
+        </button>
       </div>
       <div className='canvas-container'>
         <div className='canvas'>
@@ -63,8 +66,8 @@ function Dashboard() {
         </div>
 
         {/* Datastreams Sidebar */}
-        {datastreams.length > 0 && (
-          <div className='datastreams-panel'>
+        <div className={`datastreams-panel ${datastreams.length > 0 ? 'open' : ''}`}>
+          <div className='panel-content'>
             <h3>Active Datastreams</h3>
             <div className='datastreams-list'>
               {datastreams.map((ds) => (
@@ -88,7 +91,7 @@ function Dashboard() {
               ))}
             </div>
           </div>
-        )}
+        </div>
       </div>
 
       {/* Popup Modal */}

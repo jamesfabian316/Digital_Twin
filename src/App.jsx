@@ -13,6 +13,11 @@ function App() {
     navigate('/')
   }
 
+  const handleLogout = () => {
+    setIsAuthenticated(false)
+    navigate('/login')
+  }
+
   return (
     <Routes>
       <Route
@@ -23,7 +28,7 @@ function App() {
         path='/'
         element={
           isAuthenticated ? (
-            <Dashboard />
+            <Dashboard onLogout={handleLogout} />
           ) : (
             <Navigate
               to='/login'

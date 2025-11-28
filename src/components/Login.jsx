@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import './Login.css'
 
 const Login = ({ onLogin }) => {
@@ -8,7 +8,7 @@ const Login = ({ onLogin }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    if (username === 'user' && password === 'password') {
+    if (username === 'user' && password === 'asdf@1234') {
       onLogin()
     } else {
       setError('Invalid username or password')

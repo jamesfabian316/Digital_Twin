@@ -3,7 +3,17 @@ body,
 #root {
   margin: 0;
   padding: 0;
-  /* justify-items: center; */
+  height: 100%;
+  width: 100%;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 :root {
